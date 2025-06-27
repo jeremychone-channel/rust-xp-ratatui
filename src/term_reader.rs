@@ -8,7 +8,7 @@ use tokio::select;
 use tokio::sync::mpsc::Sender;
 use tokio::task::JoinHandle;
 
-pub fn run_tin_read(app_tx: Sender<AppEvent>) -> Result<JoinHandle<()>> {
+pub fn run_term_read(app_tx: Sender<AppEvent>) -> Result<JoinHandle<()>> {
 	let handle = tokio::spawn(async move {
 		let mut reader = EventStream::new();
 

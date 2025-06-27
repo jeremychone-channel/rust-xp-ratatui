@@ -7,7 +7,7 @@ use std::io::{self, Stdout};
 use tokio::sync::mpsc::{channel, Receiver};
 use tokio::task::JoinHandle;
 use xp_ratatui::app_event::AppEvent;
-use xp_ratatui::tin_reader::run_tin_read;
+use xp_ratatui::term_reader::run_term_read;
 use xp_ratatui::Result;
 
 #[tokio::main]
@@ -28,10 +28,10 @@ async fn exec_app(mut terminal: Terminal<CrosstermBackend<Stdout>>) -> Result<()
 	// -- Create channels
 	let (app_tx, app_rx) = channel::<AppEvent>(100);
 
-	// -- Start the tin_reader
-	let tin_read_handle = run_tin_read(app_tx.clone())?;
+	// -- Running the term_reader tasks
+	let tin_read_handle = run_term_read(app_tx.clone())?;
 
-	// -- Run Tui application
+	// -- Running Tui application
 	let tui_handle = run_tui(terminal, app_rx)?;
 
 	tui_handle.await;
