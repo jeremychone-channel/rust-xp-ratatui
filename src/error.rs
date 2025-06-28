@@ -1,4 +1,5 @@
 use derive_more::From;
+use tokio::task::JoinError;
 
 pub type Result<T> = core::result::Result<T, Error>;
 
@@ -8,6 +9,8 @@ pub enum Error {
 	Custom(String),
 
 	// -- Externals
+	#[from]
+	TokioJoin(JoinError),
 	#[from]
 	Io(std::io::Error), // as example
 }

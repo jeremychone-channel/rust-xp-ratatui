@@ -10,7 +10,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 	let mut terminal = ratatui::init();
 	terminal.clear()?;
-	let app_result = run(terminal);
+	let _app_result = run(terminal);
 	ratatui::restore();
 
 	Ok(())

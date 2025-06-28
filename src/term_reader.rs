@@ -1,6 +1,6 @@
 use crate::app_event::AppEvent;
 use crate::Result;
-use crossterm::event::{Event, EventStream};
+use crossterm::event::EventStream;
 use futures::{FutureExt, StreamExt};
 use futures_timer::Delay;
 use std::time::Duration;
@@ -13,15 +13,16 @@ pub fn run_term_read(app_tx: Sender<AppEvent>) -> Result<JoinHandle<()>> {
 		let mut reader = EventStream::new();
 
 		loop {
-			let mut delay = Delay::new(Duration::from_millis(200)).fuse();
-			let mut event = reader.next().fuse();
+			let delay = Delay::new(Duration::from_millis(200)).fuse();
+			let event = reader.next().fuse();
 
 			select! {
 				_ = delay => {  },
 				maybe_event = event => {
 					match maybe_event {
 						Some(Ok(event)) => {
-							if app_tx.send(event.into()).await.is_err() {
+							if let Err(_err) = app_tx.send(event.into()).await {
+								println!("Cannot send app_txt.send");
 								break;
 							}
 						}
