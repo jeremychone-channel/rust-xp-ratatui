@@ -25,7 +25,7 @@ pub fn run_term_read(app_tx: Sender<AppEvent>) -> Result<JoinHandle<()>> {
 								break;
 							}
 						}
-						Some(Err(e)) => println!("Error: {:?}\r", e),
+						Some(Err(e)) => println!("Error: {e:?}\r"),
 						None => break,
 					}
 				}
