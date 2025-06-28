@@ -1,9 +1,11 @@
 use crossterm::event::{self, KeyCode, KeyEventKind};
-use ratatui::layout::Rect;
+use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::style::Stylize;
 use ratatui::widgets::{Block, Paragraph};
 use ratatui::DefaultTerminal;
 use std::io;
+
+// Layout doc: https://ratatui.rs/concepts/layout/
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -20,24 +22,21 @@ fn run(mut terminal: DefaultTerminal) -> io::Result<()> {
 	loop {
 		c += 1;
 		terminal.draw(|frame| {
-			let frame_width = frame.area().width;
-			let frame_height = frame.area().height;
+			let layout = Layout::default()
+				.direction(Direction::Vertical)
+				.constraints(vec![Constraint::Length(3), Constraint::Percentage(100)])
+				.split(frame.area());
 
 			// -- Add header
-			let last_el_height = 3;
-			let session_header_area = Rect::new(0, 0, frame_width, last_el_height);
-			let session_header_block = Block::bordered().title("Session").on_red();
-			let header_v = Paragraph::new(format!("Counter ({c})"))
+			let session_header_block = Block::bordered().title(" Session ");
+			let header_v = Paragraph::new(format!("Some session information ({c})"))
 				.white()
-				.on_blue()
 				.block(session_header_block);
-			frame.render_widget(header_v, session_header_area);
+			frame.render_widget(header_v, layout[0]);
 
 			// -- Add body
-			let body_area = Rect::new(0, last_el_height, frame_width, frame_height - last_el_height - 1);
-			let body_block = Block::bordered().title("This is a big title"); // By default in the top left corner
-
-			frame.render_widget(body_block, body_area);
+			let body_block = Block::bordered().title(" Runs "); // By default in the top left corner
+			frame.render_widget(body_block, layout[1]);
 		})?;
 
 		if let event::Event::Key(key) = event::read()? {
