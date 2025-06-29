@@ -9,7 +9,7 @@ use std::io::Stdout;
 use std::time::Duration;
 use tokio::select;
 use tokio::sync::mpsc::Sender;
-use tokio::sync::mpsc::{channel, Receiver};
+use tokio::sync::mpsc::{Receiver, channel};
 use tokio::task::JoinHandle;
 
 pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
@@ -58,10 +58,11 @@ fn run_tui(mut terminal: DefaultTerminal, mut term_rx: Receiver<Event>) -> Resul
 				})
 				.expect("cannot draw in terminal");
 
-			if let Some(Event::Key(key)) = term_rx.recv().await {
-				if key.kind == KeyEventKind::Press && key.code == KeyCode::Char('q') {
-					return;
-				}
+			if let Some(Event::Key(key)) = term_rx.recv().await
+				&& key.kind == KeyEventKind::Press
+				&& key.code == KeyCode::Char('q')
+			{
+				return;
 			}
 		}
 	});
