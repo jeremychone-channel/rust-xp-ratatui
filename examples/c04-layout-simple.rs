@@ -1,8 +1,8 @@
 use crossterm::event::{self, KeyCode, KeyEventKind};
+use ratatui::DefaultTerminal;
 use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::style::Stylize;
 use ratatui::widgets::{Block, Paragraph};
-use ratatui::DefaultTerminal;
 use std::io;
 
 // Layout doc: https://ratatui.rs/concepts/layout/
@@ -39,10 +39,11 @@ fn run(mut terminal: DefaultTerminal) -> io::Result<()> {
 			frame.render_widget(body_block, layout[1]);
 		})?;
 
-		if let event::Event::Key(key) = event::read()? {
-			if key.kind == KeyEventKind::Press && key.code == KeyCode::Char('q') {
-				return Ok(());
-			}
+		if let event::Event::Key(key) = event::read()?
+			&& key.kind == KeyEventKind::Press
+			&& key.code == KeyCode::Char('q')
+		{
+			return Ok(());
 		}
 	}
 }
